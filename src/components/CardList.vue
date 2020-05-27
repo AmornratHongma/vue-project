@@ -2,7 +2,7 @@
     <div class="container">
         <div class="card" v-for="archive in items" :key="archive.id">
             <h3>{{ archive.date }} : {{ archive.time}}</h3>
-            <ul v-for="task in archive.task" :key="task.id">
+            <ul v-for="task in archive.tasks" :key="task.id">
                 <li>{{ task.id}} - {{ task.title}}</li>
             </ul>
         </div>
