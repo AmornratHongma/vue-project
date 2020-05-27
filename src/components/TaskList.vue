@@ -1,17 +1,50 @@
 <template>
     <div class="container">
+    <div class="add-task">
+        <input id="new-task" type="text" v-model="newTask">
+        <button type="button" @click="addTask(newTask)">Add New Task</button>
+    </div>
+
         <div class="task-zone">
             <div class="drop-zone" @drop="onDrop($event, 'todo')" @dragenter.prevent @dragover.prevent>
                 <h1>To-Do</h1>
-                <div class="drag-el" draggable @dragstart="onStart($event,task)" v-for="task in todoList" :key="task.id">{{task.title}}</div>
+                <div class="drag-el" draggable @dragstart="onStart($event,task)" v-for="task in todoList" :key="task.id">
+                    <!--{{task.title}}-->
+                    <span v-if="editTask != task.id">{{ task.title }}</span>
+                    <input v-else class="edit-task" type="text" v-model="task.title">
+
+                    <button v-if="editTask != task.id" type="botton" @click="onEdit(task)">Edit</button>
+                    <button v-else type="botton" @click="editedTask(task)">Save</button>
+
+                    <button type="botton" @click="deleteTask(task)">Delete</button>
+                    </div>
             </div>
             <div class="drop-zone" @drop="onDrop($event, 'doing')" @dragenter.prevent @dragover.prevent>
                 <h1>Doing</h1> 
-                <div class="drag-el" draggable @dragstart="onStart($event,task)" v-for="task in doingList" :key="task.id">{{task.title}}</div>
+                <div class="drag-el" draggable @dragstart="onStart($event,task)" v-for="task in doingList" :key="task.id">
+                    <!--{{task.title}}-->
+                    <span v-if="editTask != task.id">{{ task.title }}</span>
+                    <input v-else class="edit-task" type="text" v-model="task.title">
+
+                    <button v-if="editTask != task.id" type="botton" @click="onEdit(task)">Edit</button>
+                    <button v-else type="botton" @click="editedTask(task)">Save</button>
+
+                    <button type="botton" @click="deleteTask(task)">Delete</button>
+                    </div>
             </div>
             <div class="drop-zone" @drop="onDrop($event, 'done')" @dragenter.prevent @dragover.prevent>
                 <h1>Done</h1>
-                <div class="drag-el" draggable @dragstart="onStart($event,task)" v-for="task in doneList" :key="task.id">{{task.title}}</div>
+                <div class="drag-el" draggable @dragstart="onStart($event,task)" v-for="task in doneList" :key="task.id">
+                    <!--{{task.title}}-->
+                    <span v-if="editTask != task.id">{{ task.title }}</span>
+                    <input v-else class="edit-task" type="text" v-model="task.title">
+
+                    <button v-if="editTask != task.id" type="botton" @click="onEdit(task)">Edit</button>
+                    <button v-else type="botton" @click="editedTask(task)">Save</button>
+
+                    <button type="botton" @click="deleteTask(task)">Delete</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -39,8 +72,10 @@ export default {
                     id: 4,
                     title: 'Item C',
                     status: 'doing'
-                }
-            ]
+                },
+            ],
+            newTask: "",
+            editTask:""
          }
     },
     computed:{
@@ -64,6 +99,22 @@ export default {
            const taskId = e.dataTransfer.getData('taskId')
            const task = this.task.find(task => task.id == taskId)
            task.status = newStatus
+        },
+        addTask(newTask){
+            let newId = this.task.length + 1
+            this.task.push({ id: newId, title: newTask, status: 'todo' })
+            this.newTask = ""
+        },
+        onEdit(task){
+            this.editTask = task.id
+        },
+        editedTask(updateTask){
+            const task = this.task.find(task => task.id == updateTask.id)
+            task.title = updateTask.title
+            this.editTask = ""
+        },
+        deleteTask(deleteTask){
+            this.task = this.task.filter(task => task.id != deleteTask.id)
         }
     }
 }
@@ -89,5 +140,8 @@ export default {
     height: 40px;
     margin: 5px auto;
     padding-top: 15px;
+}
+.add-task{
+    margin: 30px 0;
 }
 </style>
